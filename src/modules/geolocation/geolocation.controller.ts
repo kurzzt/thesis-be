@@ -33,7 +33,7 @@ export class GeolocationController {
   @Get('geoloc')
   async findAll(@Query() options: GetGeoLocDto) {
     const data = await this.geolocationService.findAll(options);
-    return { data };
+    return data;
   }
 
   // ==============================================
