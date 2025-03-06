@@ -2,17 +2,17 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Prisma, Provider } from '@prisma/client';
 import { Expose, Type } from 'class-transformer';
 import {
-  IsString,
-  IsNumber,
-  IsOptional,
+  IsEnum,
   IsMongoId,
   IsNotEmpty,
-  ValidateIf,
-  Min,
-  Max,
-  IsEnum,
-  ValidateNested,
+  IsNumber,
   IsObject,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+  ValidateIf,
+  ValidateNested,
 } from 'class-validator';
 import { AuthorAttribution } from 'src/modules/places/dto/place-related.dto';
 
@@ -43,7 +43,6 @@ export class CreatePlaceReviewDto implements Prisma.PlaceReviewCreateInput {
 
   @Expose()
   @ApiProperty()
-  @IsMongoId()
   @IsNotEmpty()
   placeId: string;
 
