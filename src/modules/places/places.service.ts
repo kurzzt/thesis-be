@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { DatabaseService } from 'src/database/database';
-import { GetPlacesDto } from './dto/get-places.dto';
-import { CreateBulkPlaceDto, CreatePlaceDto } from './dto/create-place.dto';
-import { UpdatePlaceDto } from './dto/update-place.dto';
-import { GoogleApiService } from '../google-api/google-api.service';
-import { GetNearbyPlaceDto } from '../google-api/dto/get-google-api.dto';
-import { GooNearbyFieldMask } from 'src/types/google-api/google-nearby-fieldmask';
-import { GooDetailFieldMask } from 'src/types/google-api/google-detail-fieldmask';
+import { JsonValue } from '@prisma/client/runtime/library';
 import { randomBytes } from 'crypto';
 import { findRawHelper } from 'src/common/helpers/find-raw.helper';
-import { JsonValue } from '@prisma/client/runtime/library';
+import { DatabaseService } from 'src/database/database';
+import { GooDetailFieldMask } from 'src/types/google-api/google-detail-fieldmask';
+import { GooNearbyFieldMask } from 'src/types/google-api/google-nearby-fieldmask';
+import { GetNearbyPlaceDto } from '../google-api/dto/get-google-api.dto';
+import { GoogleApiService } from '../google-api/google-api.service';
+import { CreateBulkPlaceDto, CreatePlaceDto } from './dto/create-place.dto';
+import { GetPlacesDto } from './dto/get-places.dto';
+import { UpdatePlaceDto } from './dto/update-place.dto';
 
 @Injectable()
 export class PlacesService {
@@ -103,7 +103,9 @@ export class PlacesService {
   // MONGODB GEOSPATIAL QUERY REFERENCE
   // https://github.com/prisma/prisma/discussions/22392
   async findAll(options: GetPlacesDto) {
-    const filter: JsonValue = {};
+    const filter: JsonValue = {
+      deletedAt: null
+    };
 
     if (options.latitude && options.longitude) {
       let radius = 300;
