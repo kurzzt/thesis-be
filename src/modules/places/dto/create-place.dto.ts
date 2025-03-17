@@ -1,22 +1,33 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { BussinessStatus, PriceLevel, Prisma } from '@prisma/client';
-import { Expose, Type } from 'class-transformer';
 import {
-  IsString,
+  ApiProperty,
+  ApiPropertyOptional
+} from '@nestjs/swagger';
+import {
+  BussinessStatus,
+  PriceLevel,
+  Prisma
+} from '@prisma/client';
+import {
+  Expose,
+  Type
+} from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsMongoId,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
-  IsArray,
-  Min,
-  Max,
-  IsEnum,
   IsObject,
-  IsBoolean,
-  ValidateNested,
+  IsOptional,
   IsPhoneNumber,
+  IsString,
   IsUrl,
-  IsMongoId,
+  Max,
+  Min,
+  ValidateNested,
 } from 'class-validator';
+import { PlaceType } from 'src/types/google-api/google-place-type.enum';
 import {
   AccessibilityOptions,
   AddressComponent,
@@ -26,7 +37,6 @@ import {
   PaymentOptions,
   PlusCode,
 } from './place-related.dto';
-import { PlaceType } from 'src/types/google-api/google-place-type.enum';
 
 export class CreatePlaceDto implements Prisma.PlaceCreateInput {
   @ApiProperty({ required: false })
@@ -135,6 +145,7 @@ export class CreatePlaceDto implements Prisma.PlaceCreateInput {
   @ApiProperty()
   @IsEnum(PriceLevel)
   @IsString()
+  @IsOptional()
   priceLevel?: PriceLevel;
 
   @Expose()
@@ -337,7 +348,7 @@ export class CreatePlaceDto implements Prisma.PlaceCreateInput {
   @Type(() => AccessibilityOptions)
   @IsObject()
   @IsOptional()
-  accessibilityOptions: AccessibilityOptions;
+  accessibilityOptions?: AccessibilityOptions;
 }
 
 export class CreateBulkPlaceDto {
