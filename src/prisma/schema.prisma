@@ -199,31 +199,31 @@ model PlacePhoto {
 model Place {
   id                           String                @id @default(auto()) @map("_id") @db.ObjectId
   placeAPI                     String?               @unique
-  displayName                  String
+  displayName                  String?               @default("")
   types                        String[]
-  primaryType                  String
-  internationalPhoneNumber     String
+  primaryType                  String?               @default("")
+  internationalPhoneNumber     String?               @default("")
   addressComponents            AddressComponent[]
   plusCode                     PlusCode?
-  location                     LatLng
-  rating                       Float
-  googleMapsUri                String
+  location                     LatLng?
+  rating                       Float?
+  googleMapsUri                String?
   websiteUri                   String?
   reviews                      PlaceReview[]
-  regularOpeningHours          OpeningHour
+  regularOpeningHours          OpeningHour?
   photos                       PlacePhoto[]
-  businessStatus               BussinessStatus
+  businessStatus               BussinessStatus?
   priceLevel                   PriceLevel?
   iconMaskBaseUri              String?
   iconBackgroundColor          String?
-  currentOpeningHours          OpeningHour
+  currentOpeningHours          OpeningHour?
   currentSecondaryOpeningHours OpeningHour[]
   regularSecondaryOpeningHours OpeningHour[]
-  editorialSummary             String
+  editorialSummary             String?
   paymentOptions               PaymentOptions?
   parkingOptions               ParkingOptions?
   utcOffsetMinutes             Int?
-  userRatingCount              Int
+  userRatingCount              Int?
   takeout                      Boolean               @default(false)
   delivery                     Boolean               @default(false)
   dineIn                       Boolean               @default(false)
@@ -262,13 +262,13 @@ type AddressComponent {
 }
 
 type PlusCode {
-  globalCode   String
-  compoundCode String
+  globalCode   String?
+  compoundCode String?
 }
 
 type LatLng {
-  longitude Float
-  latitude  Float
+  longitude Float?
+  latitude  Float?
 }
 
 type ViewPort {
