@@ -15,6 +15,7 @@ import { PlacePhotosModule } from './modules/place-photos/place-photos.module';
 import { KycQuestionModule } from './modules/kyc-question/kyc-question.module';
 import { KycCategoryModule } from './modules/kyc-category/kyc-category.module';
 import { KycRespondentModule } from './modules/kyc-respondent/kyc-respondent.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { KycRespondentModule } from './modules/kyc-respondent/kyc-respondent.mod
     KycCategoryModule,
     KycQuestionModule,
     KycRespondentModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseService, UsersService],
