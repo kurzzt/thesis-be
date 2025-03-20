@@ -51,6 +51,13 @@ export class PlacesService {
       const response = await this.googleApi.placeDetail(id, fieldMask);
       const { reviews, photos, place } =
         await this.googleApi.mapGooResponseToPlaceDto(response);
+      
+      const checkIfExist = await this.db.place.findFirst({
+        where: {
+          placeAPI: id
+        }
+      })
+      if(checkIfExist) continue;
 
       const [placeRes, reviewRes, photoRes] = await this.db.$transaction([
         this.db.place.create({ data: place }),
