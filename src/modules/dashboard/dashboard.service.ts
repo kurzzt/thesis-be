@@ -15,6 +15,9 @@ export class DashboardService {
       total_place: 0,
       total_place_photo: 0,
       total_place_review: 0,
+      total_regency_per_province: undefined,
+      total_district_per_regency: undefined,
+      total_village_per_district: undefined,
     }
 
     const [
@@ -35,6 +38,84 @@ export class DashboardService {
       this.db.client.placeReview.count(),
     ]);
 
+    const result_regency_per_province = await this.db.regency.aggregateRaw({
+      pipeline: [
+        { $lookup: {
+          from: 'Province',
+          localField: 'parentId',
+          foreignField: 'kodeBps',
+          as: 'parent',
+        }},
+        { $unwind: "$parent"
+        },
+        { $project: {
+          kodeBps: "$parent.kodeBps",
+          province: "$parent.name",
+        }},
+        { $group: { 
+          _id: "$province",
+          count: { $sum: 1 }
+        }},
+        { $project: {
+          _id: 0,
+          parent: "$_id",
+          total: "$count",
+        }},
+      ]
+    })
+
+    const result_district_per_regency = await this.db.district.aggregateRaw({
+      pipeline: [
+        { $lookup: {
+          from: 'Regency',
+          localField: 'parentId',
+          foreignField: 'kodeBps',
+          as: 'parent',
+        }},
+        { $unwind: "$parent"
+        },
+        { $project: {
+          kodeBps: "$parent.kodeBps",
+          regency: "$parent.name",
+        }},
+        { $group: { 
+          _id: "$regency",
+          count: { $sum: 1 }
+        }},
+        { $project: {
+          _id: 0,
+          parent: "$_id",
+          total: "$count",
+        }},
+      ]
+    })
+
+    const result_village_per_district = await this.db.district.aggregateRaw({
+      pipeline: [
+        { $lookup: {
+          from: 'Regency',
+          localField: 'parentId',
+          foreignField: 'kodeBps',
+          as: 'parent',
+        }},
+        { $unwind: "$parent"
+        },
+        { $project: {
+          kodeBps: "$parent.kodeBps",
+          regency: "$parent.name",
+        }},
+        { $group: { 
+          _id: "$regency",
+          count: { $sum: 1 }
+        }},
+        { $project: {
+          _id: 0,
+          parent: "$_id",
+          total: "$count",
+        }},
+      ]
+    })
+
     response.total_province = count_province
     response.total_regency = count_regency
     response.total_district = count_district
@@ -43,6 +124,10 @@ export class DashboardService {
     response.total_place = count_place
     response.total_place_photo = count_place_photo
     response.total_place_review = count_place_review
+
+    response.total_regency_per_province = result_regency_per_province
+    response.total_district_per_regency = result_district_per_regency
+    response.total_village_per_district = result_village_per_district
 
     return response
   }
