@@ -18,6 +18,8 @@ export class DashboardService {
       total_regency_per_province: undefined,
       total_district_per_regency: undefined,
       total_village_per_district: undefined,
+      total_most_reviewed_place: undefined,
+      total_photo_per_place: undefined,
     }
 
     const [
@@ -116,6 +118,58 @@ export class DashboardService {
       ]
     })
 
+    const result_most_reviewed_place = await this.db.placeReview.aggregateRaw({
+      pipeline: [
+        { $lookup: {
+          from: 'Place',
+          localField: 'placeId',
+          foreignField: 'placeAPI',
+          as: 'place',
+        }},
+        { $unwind: "$place"
+        },
+        { $project: {
+          placeApi: "$place.placeAPI",
+          placeName: "$place.displayName",
+        }},
+        { $group: { 
+          _id: "$placeName",
+          count: { $sum: 1 }
+        }},
+        { $project: {
+          _id: 0,
+          parent: "$_id",
+          total: "$count",
+        }},
+      ]
+    })
+
+    const result_photo_per_place = await this.db.placePhoto.aggregateRaw({
+      pipeline: [
+        { $lookup: {
+          from: 'Place',
+          localField: 'placeId',
+          foreignField: 'placeAPI',
+          as: 'place',
+        }},
+        { $unwind: "$place"
+        },
+        { $project: {
+          placeApi: "$place.placeAPI",
+          placeName: "$place.displayName",
+        }},
+        { $group: { 
+          _id: "$placeName",
+          count: { $sum: 1 }
+        }},
+        { $project: {
+          _id: 0,
+          parent: "$_id",
+          total: "$count",
+        }},
+      ]
+    })
+
     response.total_province = count_province
     response.total_regency = count_regency
     response.total_district = count_district
@@ -128,6 +182,8 @@ export class DashboardService {
     response.total_regency_per_province = result_regency_per_province
     response.total_district_per_regency = result_district_per_regency
     response.total_village_per_district = result_village_per_district
+    response.total_most_reviewed_place = result_most_reviewed_place
+    response.total_photo_per_place = result_photo_per_place
 
     return response
   }
