@@ -59,14 +59,18 @@ export class PlacesService {
       })
       if(checkIfExist) continue;
 
-      const [placeRes, reviewRes, photoRes] = await this.db.$transaction([
-        this.db.place.create({ data: place }),
-        this.db.placeReview.createMany({ data: reviews }),
-        this.db.placePhoto.createMany({ data: photos }),
-      ]);
+      const placeRes = await this.db.place.create({ data: place })
       placeCount += 1;
-      reviewCount += reviewRes.count;
-      photoCount += photoRes.count;
+      
+      if(reviews.length > 0){
+        const reviewRes = await this.db.placeReview.createMany({ data: reviews })
+        reviewCount += reviewRes.count;
+      }
+
+      if(photos.length > 0){
+        const photoRes = await this.db.placePhoto.createMany({ data: photos })
+        photoCount += photoRes.count;
+      }
     }
 
     return { placeCount, reviewCount, photoCount };
